@@ -1,7 +1,8 @@
-# vdom-benchmark-kivi
+# vdom-benchmark-virtual-dom
 
 [Virtual DOM Benchmark](https://github.com/localvoid/vdom-benchmark)
-implementation for [kivi](https://github.com/localvoid/kivi) library.
+implementation for
+[virtual-dom](https://github.com/Matt-Esch/virtual-dom) library.
 
 ## Development
 
