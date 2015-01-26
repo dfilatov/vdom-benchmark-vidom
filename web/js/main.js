@@ -8,7 +8,7 @@ var VNode = require('virtual-dom/vnode/vnode');
 var VText = require('virtual-dom/vnode/vtext');
 
 var NAME = 'virtual-dom';
-var VERSION = '1.2.0';
+var VERSION = '1.3.0';
 
 function renderTree(nodes) {
   var children = [];
