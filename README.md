@@ -1,8 +1,8 @@
-# vdom-benchmark-virtual-dom
+# vdom-benchmark-vidom
 
 [Virtual DOM Benchmark](https://github.com/localvoid/vdom-benchmark)
 implementation for
-[virtual-dom](https://github.com/Matt-Esch/virtual-dom) library.
+[vidom](https://github.com/dfilatov/vidom) library.
 
 ## Development
 

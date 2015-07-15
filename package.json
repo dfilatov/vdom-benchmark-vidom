@@ -1,14 +1,14 @@
 {
   "private": true,
-  "name": "vdom-benchmark-virtual-dom",
-  "version": "0.1.0",
-  "description": "Virtual DOM Benchmark: virtual dom",
+  "name": "vdom-benchmark-vidom",
+  "version": "0.0.1",
+  "description": "Virtual DOM Benchmark: vidom",
   "license": "BSD",
-  "repository": "https://github.com/localvoid/vdom-benchmark-virtual-dom",
+  "repository": "https://github.com/dfilatov/vdom-benchmark-vidom",
   "author": {
-    "name": "Boris Kaul",
-    "email": "localvoid@gmail.com",
-    "url": "https://github.com/localvoid"
+    "name": "Dmitry Filatov",
+    "email": "dfilatov@yandex-team.ru",
+    "url": "https://github.com/dfilatov"
   },
   "keywords": [
     "virtual",
@@ -22,7 +22,7 @@
   ],
   "dependencies": {
     "vdom-benchmark-base": "^0.2.2",
-    "virtual-dom": "^2.0.0"
+    "vidom": "0.0.7"
   },
   "devDependencies": {
     "browser-sync": "^1.9.0",
