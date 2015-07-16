@@ -4,7 +4,7 @@ var benchmark = require('vdom-benchmark-base');
 var vidom = require('vidom');
 
 var NAME = 'vidom';
-var VERSION = '0.0.10';
+var VERSION = '0.0.11';
 
 function renderTree(nodes) {
   var children = [];
