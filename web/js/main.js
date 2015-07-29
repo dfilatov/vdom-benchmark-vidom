@@ -16,7 +16,7 @@ function renderTree(nodes) {
     if (n.children !== null) {
       children.push(vidom.createNode('div').key(n.key).children(renderTree(n.children)));
     } else {
-      children.push(vidom.createNode().key(n.key).text(n.key.toString()));
+      children.push(vidom.createNode('span').key(n.key).children(n.key.toString()));
     }
   }
 
