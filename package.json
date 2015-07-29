@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "vdom-benchmark-vidom",
   "version": "0.0.2",
   "description": "Virtual DOM Benchmark: vidom",
@@ -22,7 +21,7 @@
   ],
   "dependencies": {
     "vdom-benchmark-base": "^0.2.2",
-    "vidom": "0.0.15"
+    "vidom": "0.0.16"
   },
   "devDependencies": {
     "browser-sync": "^1.9.0",
