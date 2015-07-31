@@ -21,7 +21,7 @@
   ],
   "dependencies": {
     "vdom-benchmark-base": "^0.2.2",
-    "vidom": "0.0.16"
+    "vidom": "0.0.18"
   },
   "devDependencies": {
     "browser-sync": "^1.9.0",
