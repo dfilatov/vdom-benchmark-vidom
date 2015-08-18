@@ -20,8 +20,8 @@
     "vdom-benchmark"
   ],
   "dependencies": {
-    "vdom-benchmark-base": "^0.2.2",
-    "vidom": "0.0.27"
+    "vdom-benchmark-base": "0.2.3",
+    "vidom": "0.0.33"
   },
   "devDependencies": {
     "babelify": "^6.1.3",
