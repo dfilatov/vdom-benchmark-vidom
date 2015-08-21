@@ -8,6 +8,7 @@ var buffer = require('vinyl-buffer');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
 var browserify = require('browserify');
+var envify = require('envify/custom');
 var deploy = require('gulp-gh-pages');
 
 var browserSync = require('browser-sync');
@@ -27,6 +28,9 @@ gulp.task('scripts', function() {
   });
 
   return bundler
+    .transform(envify({
+      NODE_ENV: NODE_ENV
+    }), {global: true})
     .bundle()
     .pipe(source('main.js'))
     .pipe(buffer())
