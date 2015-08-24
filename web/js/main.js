@@ -3,7 +3,7 @@ var vidom = require('vidom');
 var node = vidom.node;
 
 var NAME = 'vidom';
-var VERSION = '0.0.46';
+var VERSION = '0.0.47';
 
 function renderTree(nodes) {
   var children = [];
