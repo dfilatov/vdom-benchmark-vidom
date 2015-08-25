@@ -15,7 +15,7 @@ function renderTree(nodes) {
     if (n.children !== null) {
       children.push(node('div').key(n.key).children(renderTree(n.children)));
     } else {
-      children.push(node('span').key(n.key).children(n.key.toString()));
+      children.push(node('span').key(n.key).children(n.key));
     }
   }
 
