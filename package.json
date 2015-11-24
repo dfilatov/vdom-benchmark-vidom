@@ -1,6 +1,6 @@
 {
   "name": "vdom-benchmark-vidom",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Virtual DOM Benchmark: vidom",
   "license": "BSD",
   "repository": "https://github.com/dfilatov/vdom-benchmark-vidom",
@@ -20,8 +20,8 @@
     "vdom-benchmark"
   ],
   "dependencies": {
-    "vdom-benchmark-base": "0.2.3",
-    "vidom": "0.0.52"
+    "vdom-benchmark-base": "0.2.4",
+    "vidom": "0.0.68"
   },
   "devDependencies": {
     "browser-sync": "^1.9.0",
