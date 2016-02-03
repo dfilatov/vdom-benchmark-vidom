@@ -4,7 +4,7 @@ var vidom = require('vidom');
 var node = vidom.node;
 
 var NAME = 'vidom';
-var VERSION = '0.0.68';
+var VERSION = '0.1.4';
 
 function renderTree(nodes) {
   var children = [];
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
   benchmark(NAME, VERSION, BenchmarkImpl);
 }, false);
 
-},{"vdom-benchmark-base":4,"vidom":33}],2:[function(require,module,exports){
+},{"vdom-benchmark-base":4,"vidom":35}],2:[function(require,module,exports){
 'use strict';
 
 var Executor = require('./executor');
@@ -402,58 +402,61 @@ module.exports = init;
 },{"./benchmark":2}],5:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _createComponent = require('./createComponent');
 
 var _createComponent2 = _interopRequireDefault(_createComponent);
 
-exports['default'] = (0, _createComponent2['default'])();
-module.exports = exports['default'];
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = (0, _createComponent2.default)();
 },{"./createComponent":21}],6:[function(require,module,exports){
 (function (global){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var ua = global.navigator ? global.navigator.userAgent : '';
 
-var isTrident = ua.indexOf('Trident') > -1;
-exports.isTrident = isTrident;
-var isEdge = ua.indexOf('Edge') > -1;
-exports.isEdge = isEdge;
+var isTrident = exports.isTrident = ua.indexOf('Trident') > -1;
+var isEdge = exports.isEdge = ua.indexOf('Edge') > -1;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{}],7:[function(require,module,exports){
 (function (global){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+exports.default = function (attrName) {
+    return attrsCfg[attrName] || DEFAULT_ATTR_CFG;
+};
 
-var _utilsEscapeAttr = require('../utils/escapeAttr');
+var _escapeAttr = require('../utils/escapeAttr');
 
-var _utilsEscapeAttr2 = _interopRequireDefault(_utilsEscapeAttr);
+var _escapeAttr2 = _interopRequireDefault(_escapeAttr);
 
-var _utilsIsInArray = require('../utils/isInArray');
+var _isInArray = require('../utils/isInArray');
 
-var _utilsIsInArray2 = _interopRequireDefault(_utilsIsInArray);
+var _isInArray2 = _interopRequireDefault(_isInArray);
 
-var _utilsDasherize = require('../utils/dasherize');
+var _dasherize = require('../utils/dasherize');
 
-var _utilsDasherize2 = _interopRequireDefault(_utilsDasherize);
+var _dasherize2 = _interopRequireDefault(_dasherize);
 
-var _utilsConsole = require('../utils/console');
+var _console = require('../utils/console');
 
-var _utilsConsole2 = _interopRequireDefault(_utilsConsole);
+var _console2 = _interopRequireDefault(_console);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var doc = global.document;
 
@@ -481,9 +484,9 @@ function setProp(node, name, val) {
 
 function setObjProp(node, name, val) {
     if ("development" !== 'production') {
-        var typeOfVal = typeof val;
+        var typeOfVal = typeof val === 'undefined' ? 'undefined' : _typeof(val);
         if (typeOfVal !== 'object') {
-            _utilsConsole2['default'].error('Error! "' + name + '" attribute expects an object as a value, not a ' + typeOfVal);
+            _console2.default.error('"' + name + '" attribute expects an object as a value, not a ' + typeOfVal);
             return;
         }
     }
@@ -507,7 +510,9 @@ function removeAttr(node, name) {
 }
 
 function removeProp(node, name) {
-    if (name === 'value' && node.tagName === 'SELECT') {
+    if (name === 'style') {
+        node[name].cssText = '';
+    } else if (name === 'value' && node.tagName === 'SELECT') {
         removeSelectValue(node);
     } else {
         node[name] = getDefaultPropVal(node.tagName, name);
@@ -524,7 +529,7 @@ function setSelectValue(node, value) {
 
     while (i < len) {
         optionNode = options[i++];
-        optionNode.selected = value != null && (isMultiple ? (0, _utilsIsInArray2['default'])(value, optionNode.value) : optionNode.value == value);
+        optionNode.selected = value != null && (isMultiple ? (0, _isInArray2.default)(value, optionNode.value) : optionNode.value == value);
     }
 }
 
@@ -540,7 +545,7 @@ function removeSelectValue(node) {
 }
 
 function attrToString(name, value) {
-    return (ATTR_NAMES[name] || name) + '="' + (0, _utilsEscapeAttr2['default'])(value) + '"';
+    return (ATTR_NAMES[name] || name) + '="' + (0, _escapeAttr2.default)(value) + '"';
 }
 
 function booleanAttrToString(name, value) {
@@ -551,7 +556,7 @@ function stylePropToString(name, value) {
     var styles = '';
 
     for (var i in value) {
-        value[i] != null && (styles += (0, _utilsDasherize2['default'])(i) + ':' + value[i] + ';');
+        value[i] != null && (styles += (0, _dasherize2.default)(i) + ':' + value[i] + ';');
     }
 
     return styles ? name + '="' + styles + '"' : styles;
@@ -610,6 +615,7 @@ var ATTR_NAMES = {
     loop: DEFAULT_PROP_CFG,
     multiple: BOOLEAN_PROP_CFG,
     muted: DEFAULT_PROP_CFG,
+    open: BOOLEAN_ATTR_CFG,
     readOnly: BOOLEAN_PROP_CFG,
     selected: BOOLEAN_PROP_CFG,
     srcDoc: DEFAULT_PROP_CFG,
@@ -624,77 +630,51 @@ var ATTR_NAMES = {
         toString: attrToString
     }
 };
-
-exports['default'] = function (attrName) {
-    return attrsCfg[attrName] || DEFAULT_ATTR_CFG;
-};
-
-module.exports = exports['default'];
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"../utils/console":27,"../utils/dasherize":28,"../utils/escapeAttr":29,"../utils/isInArray":31}],8:[function(require,module,exports){
+},{"../utils/console":27,"../utils/dasherize":28,"../utils/escapeAttr":30,"../utils/isInArray":32}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.default = SyntheticEvent;
+function SyntheticEvent(type, nativeEvent) {
+    this.type = type;
+    this.target = nativeEvent.target;
+    this.nativeEvent = nativeEvent;
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+    this._isPropagationStopped = false;
+    this._isDefaultPrevented = false;
+}
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+SyntheticEvent.prototype = {
+    stopPropagation: function stopPropagation() {
+        this._isPropagationStopped = true;
 
-var SyntheticEvent = (function () {
-    function SyntheticEvent(type, nativeEvent) {
-        _classCallCheck(this, SyntheticEvent);
+        var nativeEvent = this.nativeEvent;
+        nativeEvent.stopPropagation ? nativeEvent.stopPropagation() : nativeEvent.cancelBubble = true;
+    },
+    isPropagationStopped: function isPropagationStopped() {
+        return this._isPropagationStopped;
+    },
+    preventDefault: function preventDefault() {
+        this._isDefaultPrevented = true;
 
-        this.type = type;
-        this.target = nativeEvent.target;
-        this.nativeEvent = nativeEvent;
-
-        this._isPropagationStopped = false;
-        this._isDefaultPrevented = false;
+        var nativeEvent = this.nativeEvent;
+        nativeEvent.preventDefault ? nativeEvent.preventDefault() : nativeEvent.returnValue = false;
+    },
+    isDefaultPrevented: function isDefaultPrevented() {
+        return this._isDefaultPrevented;
     }
-
-    _createClass(SyntheticEvent, [{
-        key: "stopPropagation",
-        value: function stopPropagation() {
-            this._isPropagationStopped = true;
-
-            var nativeEvent = this.nativeEvent;
-            nativeEvent.stopPropagation ? nativeEvent.stopPropagation() : nativeEvent.cancelBubble = true;
-        }
-    }, {
-        key: "isPropagationStopped",
-        value: function isPropagationStopped() {
-            return this._isPropagationStopped;
-        }
-    }, {
-        key: "preventDefault",
-        value: function preventDefault() {
-            this._isDefaultPrevented = true;
-
-            var nativeEvent = this.nativeEvent;
-            nativeEvent.preventDefault ? nativeEvent.preventDefault() : nativeEvent.returnValue = false;
-        }
-    }, {
-        key: "isDefaultPrevented",
-        value: function isDefaultPrevented() {
-            return this._isDefaultPrevented;
-        }
-    }]);
-
-    return SyntheticEvent;
-})();
-
-exports["default"] = SyntheticEvent;
-module.exports = exports["default"];
+};
 },{}],9:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports['default'] = {
+exports.default = {
     onMouseOver: 'mouseover',
     onMouseMove: 'mousemove',
     onMouseOut: 'mouseout',
@@ -726,16 +706,14 @@ exports['default'] = {
     onCut: 'cut',
     onPaste: 'paste'
 };
-module.exports = exports['default'];
 },{}],10:[function(require,module,exports){
 (function (global){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+exports.removeListeners = exports.removeListener = exports.addListener = undefined;
 
 var _isEventSupported = require('./isEventSupported');
 
@@ -749,8 +727,9 @@ var _getDomNodeId = require('../getDomNodeId');
 
 var _getDomNodeId2 = _interopRequireDefault(_getDomNodeId);
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var doc = global.document,
-    body = doc && doc.body,
     BUBBLEABLE_NATIVE_EVENTS = ['mouseover', 'mousemove', 'mouseout', 'mousedown', 'mouseup', 'click', 'dblclick', 'keydown', 'keypress', 'keyup', 'change', 'input', 'submit', 'focus', 'blur', 'dragstart', 'drag', 'dragenter', 'dragover', 'dragleave', 'dragend', 'drop', 'contextmenu', 'wheel', 'copy', 'cut', 'paste'],
     NON_BUBBLEABLE_NATIVE_EVENTS = ['scroll', 'load', 'error'];
 
@@ -769,8 +748,8 @@ function globalEventListener(e, type) {
         listener = undefined,
         domNodeId = undefined;
 
-    while (listenersCount > 0 && target !== body) {
-        if (domNodeId = (0, _getDomNodeId2['default'])(target, true)) {
+    while (listenersCount > 0 && target && target !== doc) {
+        if (domNodeId = (0, _getDomNodeId2.default)(target, true)) {
             listeners = listenersStorage[domNodeId];
             if (listeners && (listener = listeners[type])) {
                 listenersToInvoke.push(listener);
@@ -782,14 +761,14 @@ function globalEventListener(e, type) {
     }
 
     if (listenersToInvoke.length) {
-        var _event = new _SyntheticEvent2['default'](type, e),
+        var event = new _SyntheticEvent2.default(type, e),
             len = listenersToInvoke.length;
 
         var i = 0;
 
         while (i < len) {
-            listenersToInvoke[i++](_event);
-            if (_event.isPropagationStopped()) {
+            listenersToInvoke[i++](event);
+            if (event.isPropagationStopped()) {
                 break;
             }
         }
@@ -797,10 +776,10 @@ function globalEventListener(e, type) {
 }
 
 function eventListener(e) {
-    listenersStorage[(0, _getDomNodeId2['default'])(e.target)][e.type](new _SyntheticEvent2['default'](e.type, e));
+    listenersStorage[(0, _getDomNodeId2.default)(e.target)][e.type](new _SyntheticEvent2.default(e.type, e));
 }
 
-if (body) {
+if (doc) {
     (function () {
         var focusEvents = {
             focus: 'focusin',
@@ -817,13 +796,13 @@ if (body) {
                 bubbles: true,
                 listenersCounter: 0,
                 set: false,
-                setup: focusEvents[type] ? (0, _isEventSupported2['default'])(focusEvents[type]) ? function () {
+                setup: focusEvents[type] ? (0, _isEventSupported2.default)(focusEvents[type]) ? function () {
                     var type = this.type;
-                    body.addEventListener(focusEvents[type], function (e) {
+                    doc.addEventListener(focusEvents[type], function (e) {
                         globalEventListener(e, type);
                     });
                 } : function () {
-                    body.addEventListener(this.type, globalEventListener, true);
+                    doc.addEventListener(this.type, globalEventListener, true);
                 } : null
             };
         }
@@ -841,14 +820,13 @@ if (body) {
 
 function addListener(domNode, type, listener) {
     var cfg = eventsCfg[type];
-
     if (cfg) {
         if (!cfg.set) {
-            cfg.setup ? cfg.setup() : cfg.bubbles && body.addEventListener(type, globalEventListener, false);
+            cfg.setup ? cfg.setup() : cfg.bubbles && doc.addEventListener(type, globalEventListener, false);
             cfg.set = true;
         }
 
-        var domNodeId = (0, _getDomNodeId2['default'])(domNode),
+        var domNodeId = (0, _getDomNodeId2.default)(domNode),
             listeners = listenersStorage[domNodeId] || (listenersStorage[domNodeId] = {});
 
         if (!listeners[type]) {
@@ -860,7 +838,7 @@ function addListener(domNode, type, listener) {
 }
 
 function removeListener(domNode, type) {
-    var domNodeId = (0, _getDomNodeId2['default'])(domNode, true);
+    var domNodeId = (0, _getDomNodeId2.default)(domNode, true);
 
     if (domNodeId) {
         var listeners = listenersStorage[domNodeId];
@@ -878,7 +856,7 @@ function removeListener(domNode, type) {
 }
 
 function removeListeners(domNode) {
-    var domNodeId = (0, _getDomNodeId2['default'])(domNode, true);
+    var domNodeId = (0, _getDomNodeId2.default)(domNode, true);
 
     if (domNodeId) {
         var listeners = listenersStorage[domNodeId];
@@ -901,7 +879,7 @@ exports.removeListeners = removeListeners;
 (function (global){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 var doc = global.document;
@@ -923,14 +901,13 @@ function isEventSupported(type) {
     return type === 'wheel' && doc.implementation && doc.implementation.hasFeature && doc.implementation.hasFeature('', '') !== true && doc.implementation.hasFeature('Events.wheel', '3.0');
 }
 
-exports['default'] = isEventSupported;
-module.exports = exports['default'];
+exports.default = isEventSupported;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{}],12:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 var ID_PROP = '__vidom__id__';
@@ -940,20 +917,17 @@ function getDomNodeId(node, onlyGet) {
     return node[ID_PROP] || (onlyGet ? null : node[ID_PROP] = counter++);
 }
 
-exports['default'] = getDomNodeId;
-module.exports = exports['default'];
+exports.default = getDomNodeId;
 },{}],13:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.mountToDom = mountToDom;
 exports.mountToDomSync = mountToDomSync;
 exports.unmountFromDom = unmountFromDom;
 exports.unmountFromDomSync = unmountFromDomSync;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _getDomNodeId = require('./getDomNodeId');
 
@@ -963,11 +937,17 @@ var _rafBatch = require('./rafBatch');
 
 var _rafBatch2 = _interopRequireDefault(_rafBatch);
 
+var _emptyObj = require('../utils/emptyObj');
+
+var _emptyObj2 = _interopRequireDefault(_emptyObj);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var mountedNodes = {};
 var counter = 0;
 
 function mount(domNode, tree, cb, cbCtx, syncMode) {
-    var domNodeId = (0, _getDomNodeId2['default'])(domNode),
+    var domNodeId = (0, _getDomNodeId2.default)(domNode),
         mounted = mountedNodes[domNodeId],
         mountId = undefined;
 
@@ -980,11 +960,11 @@ function mount(domNode, tree, cb, cbCtx, syncMode) {
                 callCb(cb, cbCtx);
             }
         };
-        syncMode ? patchFn() : (0, _rafBatch2['default'])(patchFn);
+        syncMode ? patchFn() : (0, _rafBatch2.default)(patchFn);
     } else {
         mountedNodes[domNodeId] = { tree: null, id: mountId = ++counter };
 
-        var existingDom = domNode.firstChild;
+        var existingDom = domNode.firstElementChild;
         if (existingDom) {
             mountedNodes[domNodeId].tree = tree;
             tree.adoptDom(existingDom);
@@ -1000,13 +980,13 @@ function mount(domNode, tree, cb, cbCtx, syncMode) {
                 }
             };
 
-            syncMode ? renderFn() : (0, _rafBatch2['default'])(renderFn);
+            syncMode ? renderFn() : (0, _rafBatch2.default)(renderFn);
         }
     }
 }
 
 function unmount(domNode, cb, cbCtx, syncMode) {
-    var domNodeId = (0, _getDomNodeId2['default'])(domNode);
+    var domNodeId = (0, _getDomNodeId2.default)(domNode);
     var mounted = mountedNodes[domNodeId];
 
     if (mounted) {
@@ -1015,14 +995,18 @@ function unmount(domNode, cb, cbCtx, syncMode) {
                 unmountFn = function unmountFn() {
                 mounted = mountedNodes[domNodeId];
                 if (mounted && mounted.id === mountId) {
-                    mounted.tree && mounted.tree.unmount();
                     delete mountedNodes[domNodeId];
-                    domNode.innerHTML = '';
+                    var tree = mounted.tree;
+                    if (tree) {
+                        var treeDomNode = tree.getDomNode();
+                        tree.unmount();
+                        domNode.removeChild(treeDomNode);
+                    }
                     callCb(cb, cbCtx);
                 }
             };
 
-            mounted.tree ? syncMode ? unmountFn() : (0, _rafBatch2['default'])(unmountFn) : syncMode || callCb(cb, cbCtx);
+            mounted.tree ? syncMode ? unmountFn() : (0, _rafBatch2.default)(unmountFn) : syncMode || callCb(cb, cbCtx);
         })();
     } else if (!syncMode) {
         callCb(cb, cbCtx);
@@ -1048,25 +1032,25 @@ function unmountFromDom(domNode, cb, cbCtx) {
 function unmountFromDomSync(domNode) {
     unmount(domNode, null, null, true);
 }
-},{"./getDomNodeId":12,"./rafBatch":15}],14:[function(require,module,exports){
+},{"../utils/emptyObj":29,"./getDomNodeId":12,"./rafBatch":15}],14:[function(require,module,exports){
 (function (global){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _domAttrs = require('./domAttrs');
 
 var _domAttrs2 = _interopRequireDefault(_domAttrs);
 
-var _eventsDomEventManager = require('./events/domEventManager');
+var _domEventManager = require('./events/domEventManager');
 
-var _eventsAttrsToEvents = require('./events/attrsToEvents');
+var _attrsToEvents = require('./events/attrsToEvents');
 
-var _eventsAttrsToEvents2 = _interopRequireDefault(_eventsAttrsToEvents);
+var _attrsToEvents2 = _interopRequireDefault(_attrsToEvents);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var doc = global.document;
 
@@ -1128,25 +1112,32 @@ function replace(parentNode, oldNode, newNode) {
 function updateAttr(node, attrName, attrVal) {
     var domNode = node.getDomNode();
 
-    _eventsAttrsToEvents2['default'][attrName] ? (0, _eventsDomEventManager.addListener)(domNode, _eventsAttrsToEvents2['default'][attrName], attrVal) : (0, _domAttrs2['default'])(attrName).set(domNode, attrName, attrVal);
+    _attrsToEvents2.default[attrName] ? (0, _domEventManager.addListener)(domNode, _attrsToEvents2.default[attrName], attrVal) : (0, _domAttrs2.default)(attrName).set(domNode, attrName, attrVal);
 }
 
 function removeAttr(node, attrName) {
     var domNode = node.getDomNode();
 
-    _eventsAttrsToEvents2['default'][attrName] ? (0, _eventsDomEventManager.removeListener)(domNode, _eventsAttrsToEvents2['default'][attrName]) : (0, _domAttrs2['default'])(attrName).remove(domNode, attrName);
+    _attrsToEvents2.default[attrName] ? (0, _domEventManager.removeListener)(domNode, _attrsToEvents2.default[attrName]) : (0, _domAttrs2.default)(attrName).remove(domNode, attrName);
 }
 
 function updateText(node, text, escape) {
     var domNode = node.getDomNode();
-    escape ? domNode.textContent = text : domNode.innerHTML = text;
+
+    if (escape) {
+        var firstChild = domNode.firstChild;
+
+        firstChild ? firstChild.nodeValue = text : domNode.textContent = text;
+    } else {
+        domNode.innerHTML = text;
+    }
 }
 
 function removeText(parentNode) {
     parentNode.getDomNode().innerHTML = '';
 }
 
-exports['default'] = {
+exports.default = {
     appendChild: appendChild,
     insertChild: insertChild,
     removeChild: removeChild,
@@ -1158,7 +1149,6 @@ exports['default'] = {
     updateText: updateText,
     removeText: removeText
 };
-module.exports = exports['default'];
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{"./domAttrs":7,"./events/attrsToEvents":9,"./events/domEventManager":10}],15:[function(require,module,exports){
@@ -1184,7 +1174,7 @@ function applyBatch() {
     batch = [];
 }
 
-exports["default"] = function (fn) {
+exports.default = function (fn) {
     batch.push(fn) === 1 && raf(applyBatch);
 };
 
@@ -1195,7 +1185,7 @@ exports.applyBatch = applyBatch;
 (function (global){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 var doc = global.document,
@@ -1213,15 +1203,14 @@ function createElement(ns, tag) {
     return baseElement.cloneNode();
 }
 
-exports['default'] = createElement;
-module.exports = exports['default'];
+exports.default = createElement;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{}],17:[function(require,module,exports){
 (function (global){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 var doc = global.document,
@@ -1245,32 +1234,31 @@ function createElementByHtml(html, tag, ns) {
     return helperDomNode.removeChild(helperDomNode.firstChild).firstChild;
 }
 
-exports['default'] = createElementByHtml;
-module.exports = exports['default'];
+exports.default = createElementByHtml;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
 },{}],18:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _createComponent = require('../createComponent');
 
 var _createComponent2 = _interopRequireDefault(_createComponent);
 
-var _nodesTagNode = require('../nodes/TagNode');
+var _TagNode = require('../nodes/TagNode');
 
-var _nodesTagNode2 = _interopRequireDefault(_nodesTagNode);
+var _TagNode2 = _interopRequireDefault(_TagNode);
 
-var _clientRafBatch = require('../client/rafBatch');
+var _rafBatch = require('../client/rafBatch');
 
-exports['default'] = (0, _createComponent2['default'])({
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = (0, _createComponent2.default)({
     onInit: function onInit() {
         var _this = this;
 
@@ -1280,13 +1268,13 @@ exports['default'] = (0, _createComponent2['default'])({
             attrs.onInput && attrs.onInput(e);
             attrs.onChange && attrs.onChange(e);
 
-            (0, _clientRafBatch.applyBatch)();
+            (0, _rafBatch.applyBatch)();
 
             if (_this.isMounted()) {
                 // attrs could be changed during applyBatch()
                 attrs = _this.getAttrs();
                 var control = _this.getDomRef('control');
-                if (control.value !== attrs.value) {
+                if (typeof attrs.value !== 'undefined' && control.value !== attrs.value) {
                     control.value = attrs.value;
                 }
             }
@@ -1298,54 +1286,58 @@ exports['default'] = (0, _createComponent2['default'])({
             attrs.onClick && attrs.onClick(e);
             attrs.onChange && attrs.onChange(e);
 
-            (0, _clientRafBatch.applyBatch)();
+            (0, _rafBatch.applyBatch)();
 
             if (_this.isMounted()) {
                 // attrs could be changed during applyBatch()
                 attrs = _this.getAttrs();
                 var control = _this.getDomRef('control');
-                if (control.checked !== attrs.checked) {
+                if (typeof attrs.checked !== 'undefined' && control.checked !== attrs.checked) {
                     control.checked = attrs.checked;
                 }
             }
         };
     },
-
     onRender: function onRender(attrs) {
-        var controlAttrs = _extends({}, attrs, { onChange: null });
+        var controlAttrs = undefined;
 
-        if (attrs.type === 'checkbox' || attrs.type === 'radio') {
-            controlAttrs.onClick = this.onClick;
+        if (attrs.type === 'file') {
+            controlAttrs = attrs;
         } else {
-            controlAttrs.onInput = this.onInput;
+            controlAttrs = _extends({}, attrs, { onChange: null });
+
+            if (attrs.type === 'checkbox' || attrs.type === 'radio') {
+                controlAttrs.onClick = this.onClick;
+            } else {
+                controlAttrs.onInput = this.onInput;
+            }
         }
 
-        return this.setDomRef('control', new _nodesTagNode2['default']('input').attrs(controlAttrs));
+        return this.setDomRef('control', new _TagNode2.default('input').attrs(controlAttrs));
     }
 });
-module.exports = exports['default'];
-},{"../client/rafBatch":15,"../createComponent":21,"../nodes/TagNode":24}],19:[function(require,module,exports){
+},{"../client/rafBatch":15,"../createComponent":21,"../nodes/TagNode":25}],19:[function(require,module,exports){
 'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _createComponent = require('../createComponent');
 
 var _createComponent2 = _interopRequireDefault(_createComponent);
 
-var _nodesTagNode = require('../nodes/TagNode');
+var _TagNode = require('../nodes/TagNode');
 
-var _nodesTagNode2 = _interopRequireDefault(_nodesTagNode);
+var _TagNode2 = _interopRequireDefault(_TagNode);
 
-var _clientRafBatch = require('../client/rafBatch');
+var _rafBatch = require('../client/rafBatch');
 
-exports['default'] = (0, _createComponent2['default'])({
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = (0, _createComponent2.default)({
     onInit: function onInit() {
         var _this = this;
 
@@ -1354,50 +1346,48 @@ exports['default'] = (0, _createComponent2['default'])({
 
             attrs.onChange && attrs.onChange(e);
 
-            (0, _clientRafBatch.applyBatch)();
+            (0, _rafBatch.applyBatch)();
 
             if (_this.isMounted()) {
                 // attrs could be changed during applyBatch()
                 attrs = _this.getAttrs();
                 var control = _this.getDomRef('control');
-                if (control.value !== attrs.value) {
+                if (typeof attrs.value !== 'undefined' && control.value !== attrs.value) {
                     control.value = attrs.value;
                 }
             }
         };
     },
-
     onRender: function onRender(attrs, children) {
         var controlAttrs = _extends({}, attrs, {
             onChange: this.onChange
         });
 
-        return this.setDomRef('control', new _nodesTagNode2['default']('select').attrs(controlAttrs).children(children));
+        return this.setDomRef('control', new _TagNode2.default('select').attrs(controlAttrs).children(children));
     }
 });
-module.exports = exports['default'];
-},{"../client/rafBatch":15,"../createComponent":21,"../nodes/TagNode":24}],20:[function(require,module,exports){
+},{"../client/rafBatch":15,"../createComponent":21,"../nodes/TagNode":25}],20:[function(require,module,exports){
 'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
 var _createComponent = require('../createComponent');
 
 var _createComponent2 = _interopRequireDefault(_createComponent);
 
-var _nodesTagNode = require('../nodes/TagNode');
+var _TagNode = require('../nodes/TagNode');
 
-var _nodesTagNode2 = _interopRequireDefault(_nodesTagNode);
+var _TagNode2 = _interopRequireDefault(_TagNode);
 
-var _clientRafBatch = require('../client/rafBatch');
+var _rafBatch = require('../client/rafBatch');
 
-exports['default'] = (0, _createComponent2['default'])({
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = (0, _createComponent2.default)({
     onInit: function onInit() {
         var _this = this;
 
@@ -1407,55 +1397,59 @@ exports['default'] = (0, _createComponent2['default'])({
             attrs.onInput && attrs.onInput(e);
             attrs.onChange && attrs.onChange(e);
 
-            (0, _clientRafBatch.applyBatch)();
+            (0, _rafBatch.applyBatch)();
 
             if (_this.isMounted()) {
                 // attrs could be changed during applyBatch()
                 attrs = _this.getAttrs();
                 var control = _this.getDomRef('control');
-                if (control.value !== attrs.value) {
+                if (typeof attrs.value !== 'undefined' && control.value !== attrs.value) {
                     control.value = attrs.value;
                 }
             }
         };
     },
-
     onRender: function onRender(attrs) {
         var controlAttrs = _extends({}, attrs, {
             onInput: this.onInput,
             onChange: null
         });
 
-        return this.setDomRef('control', new _nodesTagNode2['default']('textarea').attrs(controlAttrs));
+        return this.setDomRef('control', new _TagNode2.default('textarea').attrs(controlAttrs));
     }
 });
-module.exports = exports['default'];
-},{"../client/rafBatch":15,"../createComponent":21,"../nodes/TagNode":24}],21:[function(require,module,exports){
+},{"../client/rafBatch":15,"../createComponent":21,"../nodes/TagNode":25}],21:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+var _noOp = require('./utils/noOp');
 
-var _utilsNoOp = require('./utils/noOp');
+var _noOp2 = _interopRequireDefault(_noOp);
 
-var _utilsNoOp2 = _interopRequireDefault(_utilsNoOp);
+var _rafBatch = require('./client/rafBatch');
 
-var _clientRafBatch = require('./client/rafBatch');
-
-var _clientRafBatch2 = _interopRequireDefault(_clientRafBatch);
+var _rafBatch2 = _interopRequireDefault(_rafBatch);
 
 var _createNode = require('./createNode');
 
 var _createNode2 = _interopRequireDefault(_createNode);
 
-var _utilsConsole = require('./utils/console');
+var _console = require('./utils/console');
 
-var _utilsConsole2 = _interopRequireDefault(_utilsConsole);
+var _console2 = _interopRequireDefault(_console);
 
-var emptyAttrs = {};
+var _emptyObj = require('./utils/emptyObj');
+
+var _emptyObj2 = _interopRequireDefault(_emptyObj);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function mountComponent() {
     this._isMounted = true;
@@ -1468,7 +1462,7 @@ function unmountComponent() {
     this.onUnmount();
 }
 
-function patchComponent(attrs, children, parentNode) {
+function patchComponent(attrs, children, ctx, parentNode) {
     attrs = this._buildAttrs(attrs);
 
     var prevRootNode = this._rootNode,
@@ -1485,6 +1479,7 @@ function patchComponent(attrs, children, parentNode) {
     }
 
     this._children = children;
+    this._ctx = ctx;
 
     if (this._isUpdating) {
         return;
@@ -1493,9 +1488,9 @@ function patchComponent(attrs, children, parentNode) {
     var shouldUpdate = this.shouldUpdate(attrs, prevAttrs);
 
     if ("development" !== 'production') {
-        var shouldUpdateResType = typeof shouldUpdate;
+        var shouldUpdateResType = typeof shouldUpdate === 'undefined' ? 'undefined' : _typeof(shouldUpdate);
         if (shouldUpdateResType !== 'boolean') {
-            _utilsConsole2['default'].warn('Warning! Component#shouldUpdate() should return boolean instead of ' + shouldUpdateResType);
+            _console2.default.warn('Component#shouldUpdate() should return boolean instead of ' + shouldUpdateResType);
         }
     }
 
@@ -1514,8 +1509,8 @@ function renderComponentToDom(parentNode) {
     return this._rootNode.renderToDom(parentNode);
 }
 
-function renderComponentToString(ctx) {
-    return this._rootNode.renderToString(ctx);
+function renderComponentToString() {
+    return this._rootNode.renderToString();
 }
 
 function adoptComponentDom(domNode, parentNode) {
@@ -1530,30 +1525,38 @@ function getComponentAttrs() {
     return this._attrs;
 }
 
+function requestChildContext() {
+    return _emptyObj2.default;
+}
+
 function renderComponent() {
     this._domRefs = {};
 
-    var renderRes = this.onRender(this._attrs, this._children) || (0, _createNode2['default'])('noscript');
+    var rootNode = this.onRender(this._attrs, this._children) || (0, _createNode2.default)('noscript');
 
     if ("development" !== 'production') {
-        if (typeof renderRes !== 'object' || Array.isArray(renderRes)) {
-            _utilsConsole2['default'].error('Error! Component#onRender must return a single node object on the top level');
+        if ((typeof rootNode === 'undefined' ? 'undefined' : _typeof(rootNode)) !== 'object' || Array.isArray(rootNode)) {
+            _console2.default.error('Component#onRender must return a single node object on the top level');
         }
     }
 
-    return renderRes;
+    var childCtx = this.onChildContextRequest(this._attrs);
+
+    rootNode.ctx(childCtx === _emptyObj2.default ? this._ctx : this._ctx === _emptyObj2.default ? childCtx : _extends({}, this._ctx, childCtx));
+
+    return rootNode;
 }
 
 function updateComponent(cb, cbCtx) {
     var _this = this;
 
     if (this._isUpdating) {
-        cb && (0, _clientRafBatch2['default'])(function () {
+        cb && (0, _rafBatch2.default)(function () {
             return cb.call(cbCtx || _this);
         });
     } else {
         this._isUpdating = true;
-        (0, _clientRafBatch2['default'])(function () {
+        (0, _rafBatch2.default)(function () {
             if (_this.isMounted()) {
                 _this._isUpdating = false;
                 _this.patch(_this._attrs, _this._children);
@@ -1579,8 +1582,12 @@ function getComponentDomRef(ref) {
     return this._domRefs[ref] ? this._domRefs[ref].getDomNode() : null;
 }
 
+function getComponentContext() {
+    return this._ctx;
+}
+
 function getComponentDefaultAttrs() {
-    return emptyAttrs;
+    return _emptyObj2.default;
 }
 
 function buildComponentAttrs(attrs) {
@@ -1595,7 +1602,7 @@ function buildComponentAttrs(attrs) {
         return defaultAttrs;
     }
 
-    if (defaultAttrs === emptyAttrs) {
+    if (defaultAttrs === _emptyObj2.default) {
         return attrs;
     }
 
@@ -1613,9 +1620,10 @@ function buildComponentAttrs(attrs) {
 }
 
 function createComponent(props, staticProps) {
-    var res = function res(attrs, children) {
+    var res = function res(attrs, children, ctx) {
         this._attrs = this._buildAttrs(attrs);
         this._children = children;
+        this._ctx = ctx;
         this._domRefs = null;
         this._isMounted = false;
         this._isUpdating = false;
@@ -1624,14 +1632,14 @@ function createComponent(props, staticProps) {
     },
         ptp = {
         constructor: res,
-        onInit: _utilsNoOp2['default'],
+        onInit: _noOp2.default,
         mount: mountComponent,
         unmount: unmountComponent,
-        onMount: _utilsNoOp2['default'],
-        onUnmount: _utilsNoOp2['default'],
-        onAttrsReceive: _utilsNoOp2['default'],
+        onMount: _noOp2.default,
+        onUnmount: _noOp2.default,
+        onAttrsReceive: _noOp2.default,
         shouldUpdate: shouldComponentUpdate,
-        onUpdate: _utilsNoOp2['default'],
+        onUpdate: _noOp2.default,
         isMounted: isComponentMounted,
         renderToDom: renderComponentToDom,
         renderToString: renderComponentToString,
@@ -1639,12 +1647,14 @@ function createComponent(props, staticProps) {
         getDomNode: getComponentDomNode,
         getRootNode: getComponentRootNode,
         render: renderComponent,
-        onRender: _utilsNoOp2['default'],
+        onRender: _noOp2.default,
         update: updateComponent,
         patch: patchComponent,
         getDomRef: getComponentDomRef,
         setDomRef: setComponentDomRef,
         getAttrs: getComponentAttrs,
+        onChildContextRequest: requestChildContext,
+        getContext: getComponentContext,
         _buildAttrs: buildComponentAttrs
     };
 
@@ -1660,230 +1670,331 @@ function createComponent(props, staticProps) {
         res[i] = staticProps[i];
     }
 
+    res.__vidom__component__ = true;
+
     return res;
 }
 
-exports['default'] = createComponent;
-module.exports = exports['default'];
-},{"./client/rafBatch":15,"./createNode":22,"./utils/console":27,"./utils/noOp":32}],22:[function(require,module,exports){
+exports.default = createComponent;
+},{"./client/rafBatch":15,"./createNode":22,"./utils/console":27,"./utils/emptyObj":29,"./utils/noOp":33}],22:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _nodesTagNode = require('./nodes/TagNode');
-
-var _nodesTagNode2 = _interopRequireDefault(_nodesTagNode);
-
-var _nodesComponentNode = require('./nodes/ComponentNode');
-
-var _nodesComponentNode2 = _interopRequireDefault(_nodesComponentNode);
-
-var _componentsInput = require('./components/Input');
-
-var _componentsInput2 = _interopRequireDefault(_componentsInput);
-
-var _componentsTextarea = require('./components/Textarea');
-
-var _componentsTextarea2 = _interopRequireDefault(_componentsTextarea);
-
-var _componentsSelect = require('./components/Select');
-
-var _componentsSelect2 = _interopRequireDefault(_componentsSelect);
-
-var WRAPPER_COMPONENTS = {
-    input: _componentsInput2['default'],
-    textarea: _componentsTextarea2['default'],
-    select: _componentsSelect2['default']
-};
-
-function createNode(type) {
-    switch (typeof type) {
-        case 'string':
-            return WRAPPER_COMPONENTS[type] ? new _nodesComponentNode2['default'](WRAPPER_COMPONENTS[type]) : new _nodesTagNode2['default'](type);
-
-        case 'function':
-            return new _nodesComponentNode2['default'](type);
-
-        default:
-            throw Error('unsupported node type: ' + typeof type);
-    }
-}
-
-exports['default'] = createNode;
-module.exports = exports['default'];
-},{"./components/Input":18,"./components/Select":19,"./components/Textarea":20,"./nodes/ComponentNode":23,"./nodes/TagNode":24}],23:[function(require,module,exports){
-"use strict";
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+exports.default = function (type) {
+    switch (typeof type === 'undefined' ? 'undefined' : _typeof(type)) {
+        case 'string':
+            return WRAPPER_COMPONENTS[type] ? new _ComponentNode2.default(WRAPPER_COMPONENTS[type]) : new _TagNode2.default(type);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+        case 'function':
+            return type.__vidom__component__ ? new _ComponentNode2.default(type) : new _FunctionComponentNode2.default(type);
 
-var ComponentNode = (function () {
-    function ComponentNode(component) {
-        _classCallCheck(this, ComponentNode);
-
-        this.type = ComponentNode;
-        this._component = component;
-        this._key = null;
-        this._attrs = null;
-        this._instance = null;
-        this._children = null;
-        this._ns = null;
+        default:
+            if ("development" !== 'production') {
+                _console2.default.error('Unsupported type of node');
+            }
     }
+};
 
-    _createClass(ComponentNode, [{
-        key: "getDomNode",
-        value: function getDomNode() {
-            return this._instance.getDomNode();
-        }
-    }, {
-        key: "key",
-        value: function key(_key) {
-            this._key = _key;
-            return this;
-        }
-    }, {
-        key: "attrs",
-        value: function attrs(_attrs) {
-            this._attrs = _attrs;
-            return this;
-        }
-    }, {
-        key: "children",
-        value: function children(_children) {
-            this._children = _children;
-            return this;
-        }
-    }, {
-        key: "renderToDom",
-        value: function renderToDom(parentNode) {
-            if (!this._ns && parentNode && parentNode._ns) {
-                this._ns = parentNode._ns;
-            }
+var _TagNode = require('./nodes/TagNode');
 
-            return this._domNode = this._getInstance().renderToDom(this);
-        }
-    }, {
-        key: "renderToString",
-        value: function renderToString(ctx) {
-            return this._getInstance().renderToString(ctx);
-        }
-    }, {
-        key: "adoptDom",
-        value: function adoptDom(domNode, parentNode) {
-            this._getInstance().adoptDom(domNode, parentNode);
-        }
-    }, {
-        key: "mount",
-        value: function mount() {
-            this._instance.getRootNode().mount();
-            this._instance.mount();
-        }
-    }, {
-        key: "unmount",
-        value: function unmount() {
-            if (this._instance) {
-                this._instance.getRootNode().unmount();
-                this._instance.unmount();
-                this._instance = null;
-            }
-        }
-    }, {
-        key: "patch",
-        value: function patch(node, parentNode) {
-            if (this === node) {
-                return;
-            }
+var _TagNode2 = _interopRequireDefault(_TagNode);
 
-            if (!node._ns && parentNode && parentNode._ns) {
-                node._ns = parentNode._ns;
-            }
+var _ComponentNode = require('./nodes/ComponentNode');
 
-            var instance = this._getInstance();
+var _ComponentNode2 = _interopRequireDefault(_ComponentNode);
 
-            if (this.type === node.type) {
-                if (this._component === node._component) {
-                    instance.patch(node._attrs, node._children, parentNode);
-                    node._instance = instance;
-                } else {
-                    instance.unmount();
-                    var newInstance = node._getInstance();
-                    instance.getRootNode().patch(newInstance.getRootNode(), parentNode);
-                    newInstance.mount();
-                }
-            } else {
-                instance.unmount();
-                instance.getRootNode().patch(node, parentNode);
-            }
-        }
-    }, {
-        key: "_getInstance",
-        value: function _getInstance() {
-            return this._instance || (this._instance = new this._component(this._attrs, this._children));
-        }
-    }]);
+var _FunctionComponentNode = require('./nodes/FunctionComponentNode');
 
-    return ComponentNode;
-})();
+var _FunctionComponentNode2 = _interopRequireDefault(_FunctionComponentNode);
 
-exports["default"] = ComponentNode;
-module.exports = exports["default"];
-},{}],24:[function(require,module,exports){
+var _Input = require('./components/Input');
+
+var _Input2 = _interopRequireDefault(_Input);
+
+var _Textarea = require('./components/Textarea');
+
+var _Textarea2 = _interopRequireDefault(_Textarea);
+
+var _Select = require('./components/Select');
+
+var _Select2 = _interopRequireDefault(_Select);
+
+var _console = require('./utils/console');
+
+var _console2 = _interopRequireDefault(_console);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var WRAPPER_COMPONENTS = {
+    input: _Input2.default,
+    textarea: _Textarea2.default,
+    select: _Select2.default
+};
+},{"./components/Input":18,"./components/Select":19,"./components/Textarea":20,"./nodes/ComponentNode":23,"./nodes/FunctionComponentNode":24,"./nodes/TagNode":25,"./utils/console":27}],23:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.default = ComponentNode;
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _emptyObj = require('../utils/emptyObj');
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+var _emptyObj2 = _interopRequireDefault(_emptyObj);
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _clientPatchOps = require('../client/patchOps');
+function ComponentNode(component) {
+    this.type = ComponentNode;
+    this._component = component;
+    this._key = null;
+    this._attrs = null;
+    this._instance = null;
+    this._children = null;
+    this._ns = null;
+    this._ctx = _emptyObj2.default;
+}
 
-var _clientPatchOps2 = _interopRequireDefault(_clientPatchOps);
+ComponentNode.prototype = {
+    getDomNode: function getDomNode() {
+        return this._instance.getDomNode();
+    },
+    key: function key(_key) {
+        this._key = _key;
+        return this;
+    },
+    attrs: function attrs(_attrs) {
+        this._attrs = _attrs;
+        return this;
+    },
+    children: function children(_children) {
+        this._children = _children;
+        return this;
+    },
+    ctx: function ctx(_ctx) {
+        this._ctx = _ctx;
+        return this;
+    },
+    renderToDom: function renderToDom(parentNode) {
+        if (!this._ns && parentNode && parentNode._ns) {
+            this._ns = parentNode._ns;
+        }
 
-var _clientDomAttrs = require('../client/domAttrs');
+        return this._getInstance().renderToDom(this);
+    },
+    renderToString: function renderToString() {
+        return this._getInstance().renderToString();
+    },
+    adoptDom: function adoptDom(domNode, parentNode) {
+        this._getInstance().adoptDom(domNode, parentNode);
+    },
+    mount: function mount() {
+        this._instance.getRootNode().mount();
+        this._instance.mount();
+    },
+    unmount: function unmount() {
+        if (this._instance) {
+            this._instance.getRootNode().unmount();
+            this._instance.unmount();
+            this._instance = null;
+        }
+    },
+    patch: function patch(node, parentNode) {
+        if (this === node) {
+            return;
+        }
 
-var _clientDomAttrs2 = _interopRequireDefault(_clientDomAttrs);
+        if (!node._ns && parentNode && parentNode._ns) {
+            node._ns = parentNode._ns;
+        }
 
-var _clientEventsDomEventManager = require('../client/events/domEventManager');
+        var instance = this._getInstance();
 
-var _clientEventsAttrsToEvents = require('../client/events/attrsToEvents');
+        if (this.type === node.type) {
+            if (this._component === node._component) {
+                instance.patch(node._attrs, node._children, node._ctx, parentNode);
+                node._instance = instance;
+            } else {
+                instance.unmount();
+                var newInstance = node._getInstance();
+                instance.getRootNode().patch(newInstance.getRootNode(), parentNode);
+                newInstance.mount();
+            }
+        } else {
+            instance.unmount();
+            instance.getRootNode().patch(node, parentNode);
+        }
+    },
+    _getInstance: function _getInstance() {
+        return this._instance || (this._instance = new this._component(this._attrs, this._children, this._ctx));
+    }
+};
+},{"../utils/emptyObj":29}],24:[function(require,module,exports){
+'use strict';
 
-var _clientEventsAttrsToEvents2 = _interopRequireDefault(_clientEventsAttrsToEvents);
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
-var _utilsEscapeHtml = require('../utils/escapeHtml');
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = FunctionComponentNode;
 
-var _utilsEscapeHtml2 = _interopRequireDefault(_utilsEscapeHtml);
+var _TagNode = require('./TagNode');
 
-var _utilsIsInArray = require('../utils/isInArray');
+var _TagNode2 = _interopRequireDefault(_TagNode);
 
-var _utilsIsInArray2 = _interopRequireDefault(_utilsIsInArray);
+var _emptyObj = require('../utils/emptyObj');
 
-var _utilsConsole = require('../utils/console');
+var _emptyObj2 = _interopRequireDefault(_emptyObj);
 
-var _utilsConsole2 = _interopRequireDefault(_utilsConsole);
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var _clientBrowsers = require('../client/browsers');
+function FunctionComponentNode(component) {
+    this.type = FunctionComponentNode;
+    this._component = component;
+    this._key = null;
+    this._attrs = _emptyObj2.default;
+    this._rootNode = null;
+    this._children = null;
+    this._ns = null;
+    this._ctx = _emptyObj2.default;
+}
 
-var _clientUtilsCreateElement = require('../client/utils/createElement');
+FunctionComponentNode.prototype = {
+    getDomNode: function getDomNode() {
+        return this._rootNode.getDomNode();
+    },
+    key: function key(_key) {
+        this._key = _key;
+        return this;
+    },
+    attrs: function attrs(_attrs) {
+        this._attrs = _attrs;
+        return this;
+    },
+    children: function children(_children) {
+        this._children = _children;
+        return this;
+    },
+    ctx: function ctx(_ctx) {
+        this._ctx = _ctx;
+        return this;
+    },
+    renderToDom: function renderToDom(parentNode) {
+        if (!this._ns && parentNode && parentNode._ns) {
+            this._ns = parentNode._ns;
+        }
 
-var _clientUtilsCreateElement2 = _interopRequireDefault(_clientUtilsCreateElement);
+        return this._getRootNode().renderToDom(this);
+    },
+    renderToString: function renderToString() {
+        return this._getRootNode().renderToString();
+    },
+    adoptDom: function adoptDom(domNode, parentNode) {
+        this._getRootNode().adoptDom(domNode, parentNode);
+    },
+    mount: function mount() {
+        this._getRootNode().mount();
+    },
+    unmount: function unmount() {
+        if (this._rootNode) {
+            this._rootNode.unmount();
+            this._rootNode = null;
+        }
+    },
+    patch: function patch(node, parentNode) {
+        if (this === node) {
+            return;
+        }
 
-var _clientUtilsCreateElementByHtml = require('../client/utils/createElementByHtml');
+        if (!node._ns && parentNode && parentNode._ns) {
+            node._ns = parentNode._ns;
+        }
 
-var _clientUtilsCreateElementByHtml2 = _interopRequireDefault(_clientUtilsCreateElementByHtml);
+        this._getRootNode().patch(this.type === node.type ? node._getRootNode() : node, parentNode);
+    },
+    _getRootNode: function _getRootNode() {
+        if (this._rootNode) {
+            return this._rootNode;
+        }
+
+        var rootNode = this._component(this._attrs, this._children, this._ctx) || new _TagNode2.default('noscript');
+
+        if ("development" !== 'production') {
+            if ((typeof rootNode === 'undefined' ? 'undefined' : _typeof(rootNode)) !== 'object' || Array.isArray(rootNode)) {
+                console.error('Function component must return a single node object on the top level');
+            }
+        }
+
+        rootNode.ctx(this._ctx);
+
+        return this._rootNode = rootNode;
+    }
+};
+},{"../utils/emptyObj":29,"./TagNode":25}],25:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = TagNode;
+
+var _patchOps = require('../client/patchOps');
+
+var _patchOps2 = _interopRequireDefault(_patchOps);
+
+var _domAttrs = require('../client/domAttrs');
+
+var _domAttrs2 = _interopRequireDefault(_domAttrs);
+
+var _domEventManager = require('../client/events/domEventManager');
+
+var _attrsToEvents = require('../client/events/attrsToEvents');
+
+var _attrsToEvents2 = _interopRequireDefault(_attrsToEvents);
+
+var _escapeHtml = require('../utils/escapeHtml');
+
+var _escapeHtml2 = _interopRequireDefault(_escapeHtml);
+
+var _isInArray = require('../utils/isInArray');
+
+var _isInArray2 = _interopRequireDefault(_isInArray);
+
+var _console = require('../utils/console');
+
+var _console2 = _interopRequireDefault(_console);
+
+var _emptyObj = require('../utils/emptyObj');
+
+var _emptyObj2 = _interopRequireDefault(_emptyObj);
+
+var _browsers = require('../client/browsers');
+
+var _createElement = require('../client/utils/createElement');
+
+var _createElement2 = _interopRequireDefault(_createElement);
+
+var _createElementByHtml = require('../client/utils/createElementByHtml');
+
+var _createElementByHtml2 = _interopRequireDefault(_createElementByHtml);
+
+var _ComponentNode = require('./ComponentNode');
+
+var _ComponentNode2 = _interopRequireDefault(_ComponentNode);
+
+var _FunctionComponentNode = require('./FunctionComponentNode');
+
+var _FunctionComponentNode2 = _interopRequireDefault(_FunctionComponentNode);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var SHORT_TAGS = {
     area: true,
@@ -1904,537 +2015,547 @@ var SHORT_TAGS = {
     track: true,
     wbr: true
 },
-    USE_DOM_STRINGS = _clientBrowsers.isTrident || _clientBrowsers.isEdge;
+    USE_DOM_STRINGS = _browsers.isTrident || _browsers.isEdge;
 
-var TagNode = (function () {
-    function TagNode(tag) {
-        _classCallCheck(this, TagNode);
+function TagNode(tag) {
+    this.type = TagNode;
+    this._tag = tag;
+    this._domNode = null;
+    this._key = null;
+    this._ns = null;
+    this._attrs = null;
+    this._children = null;
+    this._escapeChildren = true;
+    this._ctx = _emptyObj2.default;
+}
 
-        this.type = TagNode;
-        this._tag = tag;
-        this._domNode = null;
-        this._key = null;
-        this._ns = null;
-        this._attrs = null;
-        this._children = null;
-        this._escapeChildren = true;
-    }
+TagNode.prototype = {
+    getDomNode: function getDomNode() {
+        return this._domNode;
+    },
+    key: function key(_key) {
+        this._key = _key;
+        return this;
+    },
+    ns: function ns(_ns) {
+        this._ns = _ns;
+        return this;
+    },
+    attrs: function attrs(_attrs) {
+        this._attrs = _attrs;
 
-    _createClass(TagNode, [{
-        key: 'getDomNode',
-        value: function getDomNode() {
-            return this._domNode;
+        if ("development" !== 'production') {
+            checkAttrs(_attrs);
         }
-    }, {
-        key: 'key',
-        value: function key(_key) {
-            this._key = _key;
-            return this;
-        }
-    }, {
-        key: 'ns',
-        value: function ns(_ns) {
-            this._ns = _ns;
-            return this;
-        }
-    }, {
-        key: 'attrs',
-        value: function attrs(_attrs) {
-            this._attrs = _attrs;
 
-            if ("development" !== 'production') {
-                checkAttrs(_attrs);
+        return this;
+    },
+    children: function children(_children) {
+        if ("development" !== 'production') {
+            if (this._children !== null) {
+                _console2.default.warn('You\'re trying to set children or html more than once or pass both children and html.');
             }
+        }
 
-            return this;
-        }
-    }, {
-        key: 'children',
-        value: function children(_children) {
-            this._children = processChildren(_children);
-            return this;
-        }
-    }, {
-        key: 'html',
-        value: function html(_html) {
-            this._children = _html;
-            this._escapeChildren = false;
-            return this;
-        }
-    }, {
-        key: 'renderToDom',
-        value: function renderToDom(parentNode) {
-            if (!this._ns && parentNode && parentNode._ns) {
-                this._ns = parentNode._ns;
-            }
+        this._children = processChildren(_children);
+        return this;
+    },
+    ctx: function ctx(_ctx) {
+        if (_ctx !== _emptyObj2.default) {
+            this._ctx = _ctx;
 
             var children = this._children;
 
-            if (USE_DOM_STRINGS && children && typeof children !== 'string') {
-                var _domNode = (0, _clientUtilsCreateElementByHtml2['default'])(this.renderToString(), this._tag, this._ns);
-                this.adoptDom(_domNode, parentNode);
-                return _domNode;
-            }
+            if (children && typeof children !== 'string') {
+                var len = children.length;
+                var i = 0;
 
-            var domNode = (0, _clientUtilsCreateElement2['default'])(this._ns, this._tag),
-                attrs = this._attrs;
+                while (i < len) {
+                    children[i++].ctx(_ctx);
+                }
+            }
+        }
+
+        return this;
+    },
+    html: function html(_html) {
+        if ("development" !== 'production') {
+            if (this._children !== null) {
+                _console2.default.warn('You\'re trying to set children or html more than once or pass both children and html.');
+            }
+        }
+
+        this._children = _html;
+        this._escapeChildren = false;
+        return this;
+    },
+    renderToDom: function renderToDom(parentNode) {
+        if (!this._ns && parentNode && parentNode._ns) {
+            this._ns = parentNode._ns;
+        }
+
+        var children = this._children;
+
+        if (USE_DOM_STRINGS && children && typeof children !== 'string') {
+            var _domNode = (0, _createElementByHtml2.default)(this.renderToString(), this._tag, this._ns);
+            this.adoptDom(_domNode, parentNode);
+            return _domNode;
+        }
+
+        var domNode = (0, _createElement2.default)(this._ns, this._tag),
+            attrs = this._attrs;
+
+        if (children) {
+            if (typeof children === 'string') {
+                this._escapeChildren ? domNode.textContent = children : domNode.innerHTML = children;
+            } else {
+                var i = 0;
+                var len = children.length;
+
+                while (i < len) {
+                    domNode.appendChild(children[i++].renderToDom(this));
+                }
+            }
+        }
+
+        if (attrs) {
+            var name = undefined,
+                value = undefined;
+            for (name in attrs) {
+                (value = attrs[name]) != null && (_attrsToEvents2.default[name] ? (0, _domEventManager.addListener)(domNode, _attrsToEvents2.default[name], value) : (0, _domAttrs2.default)(name).set(domNode, name, value));
+            }
+        }
+
+        return this._domNode = domNode;
+    },
+    renderToString: function renderToString() {
+        var tag = this._tag,
+            ns = this._ns,
+            attrs = this._attrs;
+
+        var children = this._children,
+            res = '<' + tag;
+
+        if (ns) {
+            res += ' xmlns="' + ns + '"';
+        }
+
+        if (attrs) {
+            var name = undefined,
+                value = undefined,
+                attrHtml = undefined;
+            for (name in attrs) {
+                value = attrs[name];
+
+                if (value != null) {
+                    if (name === 'value') {
+                        switch (tag) {
+                            case 'textarea':
+                                children = value;
+                                continue;
+
+                            case 'select':
+                                this.ctx({ value: value, multiple: attrs.multiple });
+                                continue;
+
+                            case 'option':
+                                if (this._ctx.multiple ? (0, _isInArray2.default)(this._ctx.value, value) : this._ctx.value === value) {
+                                    res += ' ' + (0, _domAttrs2.default)('selected').toString('selected', true);
+                                }
+                        }
+                    }
+
+                    if (!_attrsToEvents2.default[name] && (attrHtml = (0, _domAttrs2.default)(name).toString(name, value))) {
+                        res += ' ' + attrHtml;
+                    }
+                }
+            }
+        }
+
+        if (SHORT_TAGS[tag]) {
+            res += '/>';
+        } else {
+            res += '>';
 
             if (children) {
                 if (typeof children === 'string') {
-                    this._escapeChildren ? domNode.textContent = children : domNode.innerHTML = children;
+                    res += this._escapeChildren ? (0, _escapeHtml2.default)(children) : children;
                 } else {
                     var i = 0;
                     var len = children.length;
 
                     while (i < len) {
-                        domNode.appendChild(children[i++].renderToDom(this));
+                        res += children[i++].renderToString();
                     }
                 }
             }
 
-            if (attrs) {
-                var _name = undefined,
-                    value = undefined;
-                for (_name in attrs) {
-                    (value = attrs[_name]) != null && (_clientEventsAttrsToEvents2['default'][_name] ? (0, _clientEventsDomEventManager.addListener)(domNode, _clientEventsAttrsToEvents2['default'][_name], value) : (0, _clientDomAttrs2['default'])(_name).set(domNode, _name, value));
-                }
-            }
-
-            return this._domNode = domNode;
+            res += '</' + tag + '>';
         }
-    }, {
-        key: 'renderToString',
-        value: function renderToString(ctx) {
-            var tag = this._tag,
-                ns = this._ns,
-                attrs = this._attrs;
 
-            var children = this._children,
-                res = '<' + tag;
-
-            if (ns) {
-                res += ' xmlns="' + ns + '"';
-            }
-
-            if (attrs) {
-                var _name2 = undefined,
-                    value = undefined,
-                    attrHtml = undefined;
-                for (_name2 in attrs) {
-                    value = attrs[_name2];
-
-                    if (value != null) {
-                        if (_name2 === 'value') {
-                            switch (tag) {
-                                case 'textarea':
-                                    children = value;
-                                    continue;
-
-                                case 'select':
-                                    ctx = { value: value, multiple: attrs.multiple };
-                                    continue;
-
-                                case 'option':
-                                    if (ctx.multiple ? (0, _utilsIsInArray2['default'])(ctx.value, value) : ctx.value === value) {
-                                        res += ' ' + (0, _clientDomAttrs2['default'])('selected').toString('selected', true);
-                                    }
-                            }
-                        }
-
-                        if (!_clientEventsAttrsToEvents2['default'][_name2] && (attrHtml = (0, _clientDomAttrs2['default'])(_name2).toString(_name2, value))) {
-                            res += ' ' + attrHtml;
-                        }
-                    }
-                }
-            }
-
-            if (SHORT_TAGS[tag]) {
-                res += '/>';
-            } else {
-                res += '>';
-
-                if (children) {
-                    if (typeof children === 'string') {
-                        res += this._escapeChildren ? (0, _utilsEscapeHtml2['default'])(children) : children;
-                    } else {
-                        var i = 0;
-                        var len = children.length;
-
-                        while (i < len) {
-                            res += children[i++].renderToString(ctx);
-                        }
-                    }
-                }
-
-                res += '</' + tag + '>';
-            }
-
-            return res;
+        return res;
+    },
+    adoptDom: function adoptDom(domNode, parentNode) {
+        if (!this._ns && parentNode && parentNode._ns) {
+            this._ns = parentNode._ns;
         }
-    }, {
-        key: 'adoptDom',
-        value: function adoptDom(domNode, parentNode) {
-            if (!this._ns && parentNode && parentNode._ns) {
-                this._ns = parentNode._ns;
-            }
 
-            this._domNode = domNode;
+        this._domNode = domNode;
 
-            var attrs = this._attrs,
-                children = this._children;
+        var attrs = this._attrs,
+            children = this._children;
 
-            if (attrs) {
-                var _name3 = undefined,
-                    value = undefined;
-                for (_name3 in attrs) {
-                    if ((value = attrs[_name3]) != null && _clientEventsAttrsToEvents2['default'][_name3]) {
-                        (0, _clientEventsDomEventManager.addListener)(domNode, _clientEventsAttrsToEvents2['default'][_name3], value);
-                    }
-                }
-            }
-
-            if (children && typeof children !== 'string') {
-                var i = 0;
-                var len = children.length;
-
-                if (len) {
-                    var domChildren = domNode.childNodes;
-                    while (i < len) {
-                        children[i].adoptDom(domChildren[i], this);
-                        ++i;
-                    }
+        if (attrs) {
+            var name = undefined,
+                value = undefined;
+            for (name in attrs) {
+                if ((value = attrs[name]) != null && _attrsToEvents2.default[name]) {
+                    (0, _domEventManager.addListener)(domNode, _attrsToEvents2.default[name], value);
                 }
             }
         }
-    }, {
-        key: 'mount',
-        value: function mount() {
-            var children = this._children;
 
-            if (children && typeof children !== 'string') {
-                var i = 0;
-                var len = children.length;
+        if (children && typeof children !== 'string') {
+            var i = 0;
+            var len = children.length;
 
+            if (len) {
+                var domChildren = domNode.childNodes;
                 while (i < len) {
-                    children[i++].mount();
-                }
-            }
-        }
-    }, {
-        key: 'unmount',
-        value: function unmount() {
-            var children = this._children;
-
-            if (children && typeof children !== 'string') {
-                var i = 0;
-                var len = children.length;
-
-                while (i < len) {
-                    children[i++].unmount();
-                }
-            }
-
-            (0, _clientEventsDomEventManager.removeListeners)(this._domNode);
-
-            this._domNode = null;
-        }
-    }, {
-        key: 'patch',
-        value: function patch(node, parentNode) {
-            if (this === node) {
-                return;
-            }
-
-            if (!node._ns && parentNode && parentNode._ns) {
-                node._ns = parentNode._ns;
-            }
-
-            if (this.type !== node.type || this._tag !== node._tag || this._ns !== node._ns) {
-                _clientPatchOps2['default'].replace(parentNode || null, this, node);
-                return;
-            }
-
-            this._domNode && (node._domNode = this._domNode);
-
-            this._patchChildren(node);
-            this._patchAttrs(node);
-        }
-    }, {
-        key: '_patchChildren',
-        value: function _patchChildren(node) {
-            var childrenA = this._children,
-                childrenB = node._children;
-
-            if (childrenA === childrenB) {
-                return;
-            }
-
-            var isChildrenAText = typeof childrenA === 'string',
-                isChildrenBText = typeof childrenB === 'string';
-
-            if (isChildrenBText) {
-                if (isChildrenAText) {
-                    _clientPatchOps2['default'].updateText(this, childrenB, node._escapeChildren);
-                    return;
-                }
-
-                childrenA && childrenA.length && _clientPatchOps2['default'].removeChildren(this);
-                childrenB && _clientPatchOps2['default'].updateText(this, childrenB, node._escapeChildren);
-
-                return;
-            }
-
-            if (!childrenB || !childrenB.length) {
-                if (childrenA) {
-                    isChildrenAText ? _clientPatchOps2['default'].removeText(this) : childrenA.length && _clientPatchOps2['default'].removeChildren(this);
-                }
-
-                return;
-            }
-
-            if (isChildrenAText && childrenA) {
-                _clientPatchOps2['default'].removeText(this);
-            }
-
-            var childrenBLen = childrenB.length;
-
-            if (isChildrenAText || !childrenA || !childrenA.length) {
-                var iB = 0;
-                while (iB < childrenBLen) {
-                    _clientPatchOps2['default'].appendChild(node, childrenB[iB++]);
-                }
-                return;
-            }
-
-            var childrenALen = childrenA.length;
-
-            if (childrenALen === 1 && childrenBLen === 1) {
-                childrenA[0].patch(childrenB[0], node);
-                return;
-            }
-
-            var leftIdxA = 0,
-                rightIdxA = childrenALen - 1,
-                leftChildA = childrenA[leftIdxA],
-                leftChildAKey = leftChildA._key,
-                rightChildA = childrenA[rightIdxA],
-                rightChildAKey = rightChildA._key,
-                leftIdxB = 0,
-                rightIdxB = childrenBLen - 1,
-                leftChildB = childrenB[leftIdxB],
-                leftChildBKey = leftChildB._key,
-                rightChildB = childrenB[rightIdxB],
-                rightChildBKey = rightChildB._key,
-                updateLeftIdxA = false,
-                updateRightIdxA = false,
-                updateLeftIdxB = false,
-                updateRightIdxB = false,
-                childrenAIndicesToSkip = {},
-                childrenAKeys = undefined,
-                foundAChildIdx = undefined,
-                foundAChild = undefined;
-
-            while (leftIdxA <= rightIdxA && leftIdxB <= rightIdxB) {
-                if (childrenAIndicesToSkip[leftIdxA]) {
-                    updateLeftIdxA = true;
-                } else if (childrenAIndicesToSkip[rightIdxA]) {
-                    updateRightIdxA = true;
-                } else if (leftChildAKey === leftChildBKey) {
-                    leftChildA.patch(leftChildB, node);
-                    updateLeftIdxA = true;
-                    updateLeftIdxB = true;
-                } else if (rightChildAKey === rightChildBKey) {
-                    rightChildA.patch(rightChildB, node);
-                    updateRightIdxA = true;
-                    updateRightIdxB = true;
-                } else if (leftChildAKey != null && leftChildAKey === rightChildBKey) {
-                    _clientPatchOps2['default'].moveChild(node, leftChildA, rightChildA, true);
-                    leftChildA.patch(rightChildB, node);
-                    updateLeftIdxA = true;
-                    updateRightIdxB = true;
-                } else if (rightChildAKey != null && rightChildAKey === leftChildBKey) {
-                    _clientPatchOps2['default'].moveChild(node, rightChildA, leftChildA, false);
-                    rightChildA.patch(leftChildB, node);
-                    updateRightIdxA = true;
-                    updateLeftIdxB = true;
-                } else if (leftChildAKey != null && leftChildBKey == null) {
-                    _clientPatchOps2['default'].insertChild(node, leftChildB, leftChildA);
-                    updateLeftIdxB = true;
-                } else if (leftChildAKey == null && leftChildBKey != null) {
-                    _clientPatchOps2['default'].removeChild(node, leftChildA);
-                    updateLeftIdxA = true;
-                } else {
-                    childrenAKeys || (childrenAKeys = buildKeys(childrenA, leftIdxA, rightIdxA));
-                    if ((foundAChildIdx = childrenAKeys[leftChildBKey]) != null) {
-                        foundAChild = childrenA[foundAChildIdx];
-                        childrenAIndicesToSkip[foundAChildIdx] = true;
-                        _clientPatchOps2['default'].moveChild(node, foundAChild, leftChildA, false);
-                        foundAChild.patch(leftChildB, node);
-                    } else {
-                        _clientPatchOps2['default'].insertChild(node, leftChildB, leftChildA);
-                    }
-                    updateLeftIdxB = true;
-                }
-
-                if (updateLeftIdxA) {
-                    updateLeftIdxA = false;
-                    if (++leftIdxA <= rightIdxA) {
-                        leftChildA = childrenA[leftIdxA];
-                        leftChildAKey = leftChildA._key;
-                    }
-                }
-
-                if (updateRightIdxA) {
-                    updateRightIdxA = false;
-                    if (--rightIdxA >= leftIdxA) {
-                        rightChildA = childrenA[rightIdxA];
-                        rightChildAKey = rightChildA._key;
-                    }
-                }
-
-                if (updateLeftIdxB) {
-                    updateLeftIdxB = false;
-                    if (++leftIdxB <= rightIdxB) {
-                        leftChildB = childrenB[leftIdxB];
-                        leftChildBKey = leftChildB._key;
-                    }
-                }
-
-                if (updateRightIdxB) {
-                    updateRightIdxB = false;
-                    if (--rightIdxB >= leftIdxB) {
-                        rightChildB = childrenB[rightIdxB];
-                        rightChildBKey = rightChildB._key;
-                    }
-                }
-            }
-
-            while (leftIdxA <= rightIdxA) {
-                if (!childrenAIndicesToSkip[leftIdxA]) {
-                    _clientPatchOps2['default'].removeChild(node, childrenA[leftIdxA]);
-                }
-                ++leftIdxA;
-            }
-
-            while (leftIdxB <= rightIdxB) {
-                rightIdxB < childrenBLen - 1 ? _clientPatchOps2['default'].insertChild(node, childrenB[leftIdxB], childrenB[rightIdxB + 1]) : _clientPatchOps2['default'].appendChild(node, childrenB[leftIdxB]);
-                ++leftIdxB;
-            }
-        }
-    }, {
-        key: '_patchAttrs',
-        value: function _patchAttrs(node) {
-            var attrsA = this._attrs,
-                attrsB = node._attrs;
-
-            if (attrsA === attrsB) {
-                return;
-            }
-
-            var attrName = undefined,
-                attrAVal = undefined,
-                attrBVal = undefined,
-                isAttrAValArray = undefined,
-                isAttrBValArray = undefined;
-
-            if (attrsB) {
-                for (attrName in attrsB) {
-                    attrBVal = attrsB[attrName];
-                    if (!attrsA || (attrAVal = attrsA[attrName]) == null) {
-                        if (attrBVal != null) {
-                            _clientPatchOps2['default'].updateAttr(this, attrName, attrBVal);
-                        }
-                    } else if (attrBVal == null) {
-                        _clientPatchOps2['default'].removeAttr(this, attrName);
-                    } else if (typeof attrBVal === 'object' && typeof attrAVal === 'object') {
-                        isAttrBValArray = Array.isArray(attrBVal);
-                        isAttrAValArray = Array.isArray(attrAVal);
-                        if (isAttrBValArray || isAttrAValArray) {
-                            if (isAttrBValArray && isAttrAValArray) {
-                                this._patchAttrArr(attrName, attrAVal, attrBVal);
-                            } else {
-                                _clientPatchOps2['default'].updateAttr(this, attrName, attrBVal);
-                            }
-                        } else {
-                            this._patchAttrObj(attrName, attrAVal, attrBVal);
-                        }
-                    } else if (attrAVal !== attrBVal) {
-                        _clientPatchOps2['default'].updateAttr(this, attrName, attrBVal);
-                    }
-                }
-            }
-
-            if (attrsA) {
-                for (attrName in attrsA) {
-                    if ((!attrsB || !(attrName in attrsB)) && (attrAVal = attrsA[attrName]) != null) {
-                        _clientPatchOps2['default'].removeAttr(this, attrName);
-                    }
-                }
-            }
-        }
-    }, {
-        key: '_patchAttrArr',
-        value: function _patchAttrArr(attrName, arrA, arrB) {
-            if (arrA === arrB) {
-                return;
-            }
-
-            var lenA = arrA.length;
-            var hasDiff = false;
-
-            if (lenA !== arrB.length) {
-                hasDiff = true;
-            } else {
-                var i = 0;
-                while (!hasDiff && i < lenA) {
-                    if (arrA[i] != arrB[i]) {
-                        hasDiff = true;
-                    }
+                    children[i].adoptDom(domChildren[i], this);
                     ++i;
                 }
             }
-
-            hasDiff && _clientPatchOps2['default'].updateAttr(this, attrName, arrB);
         }
-    }, {
-        key: '_patchAttrObj',
-        value: function _patchAttrObj(attrName, objA, objB) {
-            if (objA === objB) {
+    },
+    mount: function mount() {
+        var children = this._children;
+
+        if (children && typeof children !== 'string') {
+            var i = 0;
+            var len = children.length;
+
+            while (i < len) {
+                children[i++].mount();
+            }
+        }
+    },
+    unmount: function unmount() {
+        var children = this._children;
+
+        if (children && typeof children !== 'string') {
+            var i = 0;
+            var len = children.length;
+
+            while (i < len) {
+                children[i++].unmount();
+            }
+        }
+
+        (0, _domEventManager.removeListeners)(this._domNode);
+
+        this._domNode = null;
+    },
+    patch: function patch(node, parentNode) {
+        if (this === node) {
+            return;
+        }
+
+        if (!node._ns && parentNode && parentNode._ns) {
+            node._ns = parentNode._ns;
+        }
+
+        if (this.type !== node.type) {
+            switch (node.type) {
+                case _ComponentNode2.default:
+                    var instance = node._getInstance();
+                    this.patch(instance.getRootNode(), parentNode);
+                    instance.mount();
+                    break;
+
+                case _FunctionComponentNode2.default:
+                    this.patch(node._getRootNode(), parentNode);
+                    break;
+
+                default:
+                    _patchOps2.default.replace(parentNode || null, this, node);
+            }
+            return;
+        }
+
+        if (this._tag !== node._tag || this._ns !== node._ns) {
+            _patchOps2.default.replace(parentNode || null, this, node);
+            return;
+        }
+
+        this._domNode && (node._domNode = this._domNode);
+
+        this._patchChildren(node);
+        this._patchAttrs(node);
+    },
+    _patchChildren: function _patchChildren(node) {
+        var childrenA = this._children,
+            childrenB = node._children;
+
+        if (childrenA === childrenB) {
+            return;
+        }
+
+        var isChildrenAText = typeof childrenA === 'string',
+            isChildrenBText = typeof childrenB === 'string';
+
+        if (isChildrenBText) {
+            if (isChildrenAText) {
+                _patchOps2.default.updateText(this, childrenB, node._escapeChildren);
                 return;
             }
 
-            var hasDiff = false,
-                diffObj = {};
+            childrenA && childrenA.length && _patchOps2.default.removeChildren(this);
+            childrenB && _patchOps2.default.updateText(this, childrenB, node._escapeChildren);
 
-            for (var i in objB) {
-                if (objA[i] != objB[i]) {
-                    hasDiff = true;
-                    diffObj[i] = objB[i];
-                }
-            }
-
-            for (var i in objA) {
-                if (objA[i] != null && !(i in objB)) {
-                    hasDiff = true;
-                    diffObj[i] = null;
-                }
-            }
-
-            hasDiff && _clientPatchOps2['default'].updateAttr(this, attrName, diffObj);
+            return;
         }
-    }]);
 
-    return TagNode;
-})();
+        if (!childrenB || !childrenB.length) {
+            if (childrenA) {
+                isChildrenAText ? _patchOps2.default.removeText(this) : childrenA.length && _patchOps2.default.removeChildren(this);
+            }
 
-exports['default'] = TagNode;
+            return;
+        }
+
+        if (isChildrenAText && childrenA) {
+            _patchOps2.default.removeText(this);
+        }
+
+        var childrenBLen = childrenB.length;
+
+        if (isChildrenAText || !childrenA || !childrenA.length) {
+            var iB = 0;
+            while (iB < childrenBLen) {
+                _patchOps2.default.appendChild(node, childrenB[iB++]);
+            }
+            return;
+        }
+
+        var childrenALen = childrenA.length;
+
+        if (childrenALen === 1 && childrenBLen === 1) {
+            childrenA[0].patch(childrenB[0], node);
+            return;
+        }
+
+        var leftIdxA = 0,
+            rightIdxA = childrenALen - 1,
+            leftChildA = childrenA[leftIdxA],
+            leftChildAKey = leftChildA._key,
+            rightChildA = childrenA[rightIdxA],
+            rightChildAKey = rightChildA._key,
+            leftIdxB = 0,
+            rightIdxB = childrenBLen - 1,
+            leftChildB = childrenB[leftIdxB],
+            leftChildBKey = leftChildB._key,
+            rightChildB = childrenB[rightIdxB],
+            rightChildBKey = rightChildB._key,
+            updateLeftIdxA = false,
+            updateRightIdxA = false,
+            updateLeftIdxB = false,
+            updateRightIdxB = false,
+            childrenAIndicesToSkip = {},
+            childrenAKeys = undefined,
+            foundAChildIdx = undefined,
+            foundAChild = undefined;
+
+        while (leftIdxA <= rightIdxA && leftIdxB <= rightIdxB) {
+            if (childrenAIndicesToSkip[leftIdxA]) {
+                updateLeftIdxA = true;
+            } else if (childrenAIndicesToSkip[rightIdxA]) {
+                updateRightIdxA = true;
+            } else if (leftChildAKey === leftChildBKey) {
+                leftChildA.patch(leftChildB, node);
+                updateLeftIdxA = true;
+                updateLeftIdxB = true;
+            } else if (rightChildAKey === rightChildBKey) {
+                rightChildA.patch(rightChildB, node);
+                updateRightIdxA = true;
+                updateRightIdxB = true;
+            } else if (leftChildAKey != null && leftChildAKey === rightChildBKey) {
+                _patchOps2.default.moveChild(node, leftChildA, rightChildA, true);
+                leftChildA.patch(rightChildB, node);
+                updateLeftIdxA = true;
+                updateRightIdxB = true;
+            } else if (rightChildAKey != null && rightChildAKey === leftChildBKey) {
+                _patchOps2.default.moveChild(node, rightChildA, leftChildA, false);
+                rightChildA.patch(leftChildB, node);
+                updateRightIdxA = true;
+                updateLeftIdxB = true;
+            } else if (leftChildAKey != null && leftChildBKey == null) {
+                _patchOps2.default.insertChild(node, leftChildB, leftChildA);
+                updateLeftIdxB = true;
+            } else if (leftChildAKey == null && leftChildBKey != null) {
+                _patchOps2.default.removeChild(node, leftChildA);
+                updateLeftIdxA = true;
+            } else {
+                childrenAKeys || (childrenAKeys = buildKeys(childrenA, leftIdxA, rightIdxA));
+                if ((foundAChildIdx = childrenAKeys[leftChildBKey]) != null) {
+                    foundAChild = childrenA[foundAChildIdx];
+                    childrenAIndicesToSkip[foundAChildIdx] = true;
+                    _patchOps2.default.moveChild(node, foundAChild, leftChildA, false);
+                    foundAChild.patch(leftChildB, node);
+                } else {
+                    _patchOps2.default.insertChild(node, leftChildB, leftChildA);
+                }
+                updateLeftIdxB = true;
+            }
+
+            if (updateLeftIdxA) {
+                updateLeftIdxA = false;
+                if (++leftIdxA <= rightIdxA) {
+                    leftChildA = childrenA[leftIdxA];
+                    leftChildAKey = leftChildA._key;
+                }
+            }
+
+            if (updateRightIdxA) {
+                updateRightIdxA = false;
+                if (--rightIdxA >= leftIdxA) {
+                    rightChildA = childrenA[rightIdxA];
+                    rightChildAKey = rightChildA._key;
+                }
+            }
+
+            if (updateLeftIdxB) {
+                updateLeftIdxB = false;
+                if (++leftIdxB <= rightIdxB) {
+                    leftChildB = childrenB[leftIdxB];
+                    leftChildBKey = leftChildB._key;
+                }
+            }
+
+            if (updateRightIdxB) {
+                updateRightIdxB = false;
+                if (--rightIdxB >= leftIdxB) {
+                    rightChildB = childrenB[rightIdxB];
+                    rightChildBKey = rightChildB._key;
+                }
+            }
+        }
+
+        while (leftIdxA <= rightIdxA) {
+            if (!childrenAIndicesToSkip[leftIdxA]) {
+                _patchOps2.default.removeChild(node, childrenA[leftIdxA]);
+            }
+            ++leftIdxA;
+        }
+
+        while (leftIdxB <= rightIdxB) {
+            rightIdxB < childrenBLen - 1 ? _patchOps2.default.insertChild(node, childrenB[leftIdxB], childrenB[rightIdxB + 1]) : _patchOps2.default.appendChild(node, childrenB[leftIdxB]);
+            ++leftIdxB;
+        }
+    },
+    _patchAttrs: function _patchAttrs(node) {
+        var attrsA = this._attrs,
+            attrsB = node._attrs;
+
+        if (attrsA === attrsB) {
+            return;
+        }
+
+        var attrName = undefined,
+            attrAVal = undefined,
+            attrBVal = undefined,
+            isAttrAValArray = undefined,
+            isAttrBValArray = undefined;
+
+        if (attrsB) {
+            for (attrName in attrsB) {
+                attrBVal = attrsB[attrName];
+                if (!attrsA || (attrAVal = attrsA[attrName]) == null) {
+                    if (attrBVal != null) {
+                        _patchOps2.default.updateAttr(this, attrName, attrBVal);
+                    }
+                } else if (attrBVal == null) {
+                    _patchOps2.default.removeAttr(this, attrName);
+                } else if ((typeof attrBVal === 'undefined' ? 'undefined' : _typeof(attrBVal)) === 'object' && (typeof attrAVal === 'undefined' ? 'undefined' : _typeof(attrAVal)) === 'object') {
+                    isAttrBValArray = Array.isArray(attrBVal);
+                    isAttrAValArray = Array.isArray(attrAVal);
+                    if (isAttrBValArray || isAttrAValArray) {
+                        if (isAttrBValArray && isAttrAValArray) {
+                            this._patchAttrArr(attrName, attrAVal, attrBVal);
+                        } else {
+                            _patchOps2.default.updateAttr(this, attrName, attrBVal);
+                        }
+                    } else {
+                        this._patchAttrObj(attrName, attrAVal, attrBVal);
+                    }
+                } else if (attrAVal !== attrBVal) {
+                    _patchOps2.default.updateAttr(this, attrName, attrBVal);
+                }
+            }
+        }
+
+        if (attrsA) {
+            for (attrName in attrsA) {
+                if ((!attrsB || !(attrName in attrsB)) && (attrAVal = attrsA[attrName]) != null) {
+                    _patchOps2.default.removeAttr(this, attrName);
+                }
+            }
+        }
+    },
+    _patchAttrArr: function _patchAttrArr(attrName, arrA, arrB) {
+        if (arrA === arrB) {
+            return;
+        }
+
+        var lenA = arrA.length;
+        var hasDiff = false;
+
+        if (lenA !== arrB.length) {
+            hasDiff = true;
+        } else {
+            var i = 0;
+            while (!hasDiff && i < lenA) {
+                if (arrA[i] != arrB[i]) {
+                    hasDiff = true;
+                }
+                ++i;
+            }
+        }
+
+        hasDiff && _patchOps2.default.updateAttr(this, attrName, arrB);
+    },
+    _patchAttrObj: function _patchAttrObj(attrName, objA, objB) {
+        if (objA === objB) {
+            return;
+        }
+
+        var hasDiff = false,
+            diffObj = {};
+
+        for (var i in objB) {
+            if (objA[i] != objB[i]) {
+                hasDiff = true;
+                diffObj[i] = objB[i];
+            }
+        }
+
+        for (var i in objA) {
+            if (objA[i] != null && !(i in objB)) {
+                hasDiff = true;
+                diffObj[i] = null;
+            }
+        }
+
+        hasDiff && _patchOps2.default.updateAttr(this, attrName, diffObj);
+    }
+};
 
 function processChildren(children) {
     if (children == null) {
         return null;
     }
 
-    var typeOfChildren = typeof children;
+    var typeOfChildren = typeof children === 'undefined' ? 'undefined' : _typeof(children);
 
     if (typeOfChildren === 'object') {
         var res = Array.isArray(children) ? children : [children];
@@ -2459,21 +2580,15 @@ function checkChildren(children) {
     while (i < len) {
         child = children[i++];
 
-        if (typeof child !== 'object') {
-            _utilsConsole2['default'].error('Error! You mustn\'t use simple child in case of multiple children.');
-        }
-        //else if(child._key == null) {
-        //    if(len > 1) {
-        //        console.warn('Warning! You\'re using children without keys.');
-        //    }
-        //}
-        else if (child._key != null) {
-                if (child._key in keys) {
-                    _utilsConsole2['default'].error('Error! Childrens\' keys must be unique across the children');
-                } else {
-                    keys[child._key] = true;
-                }
+        if ((typeof child === 'undefined' ? 'undefined' : _typeof(child)) !== 'object') {
+            _console2.default.error('You mustn\'t use simple child in case of multiple children.');
+        } else if (child._key != null) {
+            if (child._key in keys) {
+                _console2.default.error('Childrens\' keys must be unique across the children. Found duplicate of "' + child._key + '" key.');
+            } else {
+                keys[child._key] = true;
             }
+        }
     }
 }
 
@@ -2491,164 +2606,124 @@ function buildKeys(children, idxFrom, idxTo) {
 }
 
 function checkAttrs(attrs) {
-    for (var _name4 in attrs) {
-        if (_name4.substr(0, 2) === 'on' && !_clientEventsAttrsToEvents2['default'][_name4]) {
-            _utilsConsole2['default'].error('Error! You\'re trying to add unsupported event listener "' + _name4 + '"');
+    for (var name in attrs) {
+        if (name.substr(0, 2) === 'on' && !_attrsToEvents2.default[name]) {
+            _console2.default.error('You\'re trying to add unsupported event listener "' + name + '".');
         }
     }
 }
-module.exports = exports['default'];
-},{"../client/browsers":6,"../client/domAttrs":7,"../client/events/attrsToEvents":9,"../client/events/domEventManager":10,"../client/patchOps":14,"../client/utils/createElement":16,"../client/utils/createElementByHtml":17,"../utils/console":27,"../utils/escapeHtml":30,"../utils/isInArray":31}],25:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-    value: true
-});
-exports['default'] = normalizeChildren;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _createNode = require('./createNode');
-
-var _createNode2 = _interopRequireDefault(_createNode);
-
-function normalizeChildren(children) {
-    var typeOfChildren = typeof children;
-    if (typeOfChildren !== 'object') {
-        return children;
-    }
-
-    if (!Array.isArray(children)) {
-        children = [children];
-    }
-
-    var res = [],
-        i = 0,
-        len = children.length,
-        child = undefined;
-
-    while (i < len) {
-        child = children[i];
-        if (Array.isArray(child)) {
-            res = res.concat(normalizeChildren(child));
-        } else if (child != null) {
-            var typeOfChild = typeof child;
-            res.push(typeOfChild === 'object' ? child : (0, _createNode2['default'])('span').children(typeOfChild === 'string' ? child : child.toString()));
-        }
-        ++i;
-    }
-
-    return res;
-}
-
-module.exports = exports['default'];
-},{"./createNode":22}],26:[function(require,module,exports){
+},{"../client/browsers":6,"../client/domAttrs":7,"../client/events/attrsToEvents":9,"../client/events/domEventManager":10,"../client/patchOps":14,"../client/utils/createElement":16,"../client/utils/createElementByHtml":17,"../utils/console":27,"../utils/emptyObj":29,"../utils/escapeHtml":31,"../utils/isInArray":32,"./ComponentNode":23,"./FunctionComponentNode":24}],26:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = function (tree) {
+exports.default = function (tree) {
   return tree.renderToString();
 };
-
-module.exports = exports["default"];
 },{}],27:[function(require,module,exports){
 (function (global){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 var _noOp = require('./noOp');
 
 var _noOp2 = _interopRequireDefault(_noOp);
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 var globalConsole = global.console,
-    console = {};
+    console = {},
+    PREFIXES = {
+    log: '',
+    info: '',
+    warn: 'Warning!',
+    error: 'Error!'
+};
 
 ['log', 'info', 'warn', 'error'].forEach(function (name) {
     console[name] = globalConsole ? globalConsole[name] ? function (arg1, arg2, arg3, arg4, arg5) {
         // IE9: console methods aren't functions
+        var arg0 = PREFIXES[name];
         switch (arguments.length) {
             case 1:
-                globalConsole[name](arg1);
+                globalConsole[name](arg0, arg1);
                 break;
 
             case 2:
-                globalConsole[name](arg1, arg2);
+                globalConsole[name](arg0, arg1, arg2);
                 break;
 
             case 3:
-                globalConsole[name](arg1, arg2, arg3);
+                globalConsole[name](arg0, arg1, arg2, arg3);
                 break;
 
             case 4:
-                globalConsole[name](arg1, arg2, arg3, arg4);
+                globalConsole[name](arg0, arg1, arg2, arg3, arg4);
                 break;
 
             case 5:
-                globalConsole[name](arg1, arg2, arg3, arg4, arg5);
+                globalConsole[name](arg0, arg1, arg2, arg3, arg4, arg5);
                 break;
         }
     } : function () {
         globalConsole.log.apply(globalConsole, arguments);
-    } : _noOp2['default'];
+    } : _noOp2.default;
 });
 
-exports['default'] = console;
-module.exports = exports['default'];
+exports.default = console;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./noOp":32}],28:[function(require,module,exports){
+},{"./noOp":33}],28:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var DASHERIZE_RE = /([^A-Z]+)([A-Z])/g;
 
-exports['default'] = function (str) {
+exports.default = function (str) {
   return str.replace(DASHERIZE_RE, '$1-$2').toLowerCase();
 };
-
-module.exports = exports['default'];
 },{}],29:[function(require,module,exports){
-'use strict';
+"use strict";
 
-Object.defineProperty(exports, '__esModule', {
-    value: true
+Object.defineProperty(exports, "__esModule", {
+  value: true
 });
-
-exports['default'] = function (str) {
-    return (str + '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
-};
-
-module.exports = exports['default'];
+exports.default = {};
 },{}],30:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-exports['default'] = function (str) {
+exports.default = function (str) {
+    return (str + '').replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+};
+},{}],31:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+exports.default = function (str) {
     return (str + '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 };
-
-module.exports = exports['default'];
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-exports["default"] = function (arr, item) {
+exports.default = function (arr, item) {
     var len = arr.length;
     var i = 0;
 
@@ -2660,30 +2735,156 @@ exports["default"] = function (arr, item) {
 
     return false;
 };
-
-module.exports = exports["default"];
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-exports["default"] = function () {};
-
-module.exports = exports["default"];
-},{}],33:[function(require,module,exports){
+exports.default = function () {};
+},{}],34:[function(require,module,exports){
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-function _interopExportWildcard(obj, defaults) { var newObj = defaults({}, obj); delete newObj['default']; return newObj; }
+exports.default = function (children) {
+    var res = normalizeChildren(children);
 
-function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
+    if (res !== null && (typeof res === 'undefined' ? 'undefined' : _typeof(res)) === 'object' && !Array.isArray(res)) {
+        res = [res];
+    }
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+    return res;
+};
+
+var _createNode = require('../createNode');
+
+var _createNode2 = _interopRequireDefault(_createNode);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function normalizeChildren(children) {
+    if (children == null) {
+        return null;
+    }
+
+    var typeOfChildren = typeof children === 'undefined' ? 'undefined' : _typeof(children);
+    if (typeOfChildren !== 'object') {
+        return typeOfChildren === 'string' ? children : children.toString();
+    }
+
+    if (!Array.isArray(children)) {
+        return children;
+    }
+
+    if (!children.length) {
+        return null;
+    }
+
+    var res = children,
+        i = 0,
+        len = children.length,
+        allSkipped = true,
+        child = undefined,
+        isChildObject = undefined;
+
+    while (i < len) {
+        child = normalizeChildren(children[i]);
+        if (child === null) {
+            if (res !== null) {
+                if (allSkipped) {
+                    res = null;
+                } else if (res === children) {
+                    res = children.slice(0, i);
+                }
+            }
+        } else {
+            if (res === null) {
+                res = child;
+            } else if (Array.isArray(child)) {
+                res = allSkipped ? child : (res === children ? res.slice(0, i) : Array.isArray(res) ? res : [res]).concat(child);
+            } else {
+                isChildObject = (typeof child === 'undefined' ? 'undefined' : _typeof(child)) === 'object';
+
+                if (isChildObject && children[i] === child) {
+                    if (res !== children) {
+                        res = join(res, child);
+                    }
+                } else {
+                    if (res === children) {
+                        if (allSkipped && isChildObject) {
+                            res = child;
+                            ++i;
+                            continue;
+                        }
+
+                        res = res.slice(0, i);
+                    }
+
+                    res = join(res, child);
+                }
+            }
+
+            allSkipped = false;
+        }
+
+        ++i;
+    }
+
+    return res;
+}
+
+function toNode(obj) {
+    return (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object' ? obj : (0, _createNode2.default)('span').children(obj);
+}
+
+function join(objA, objB) {
+    if (Array.isArray(objA)) {
+        objA.push(toNode(objB));
+        return objA;
+    }
+
+    return [toNode(objA), toNode(objB)];
+}
+},{"../createNode":22}],35:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Component = exports.normalizeChildren = exports.renderToString = exports.createComponent = exports.node = exports.unmountFromDomSync = exports.unmountFromDom = exports.mountToDomSync = exports.mountToDom = undefined;
+
+var _mounter = require('./client/mounter');
+
+Object.defineProperty(exports, 'mountToDom', {
+    enumerable: true,
+    get: function get() {
+        return _mounter.mountToDom;
+    }
+});
+Object.defineProperty(exports, 'mountToDomSync', {
+    enumerable: true,
+    get: function get() {
+        return _mounter.mountToDomSync;
+    }
+});
+Object.defineProperty(exports, 'unmountFromDom', {
+    enumerable: true,
+    get: function get() {
+        return _mounter.unmountFromDom;
+    }
+});
+Object.defineProperty(exports, 'unmountFromDomSync', {
+    enumerable: true,
+    get: function get() {
+        return _mounter.unmountFromDomSync;
+    }
+});
 
 var _createNode = require('./createNode');
 
@@ -2697,7 +2898,7 @@ var _renderToString = require('./renderToString');
 
 var _renderToString2 = _interopRequireDefault(_renderToString);
 
-var _normalizeChildren = require('./normalizeChildren');
+var _normalizeChildren = require('./utils/normalizeChildren');
 
 var _normalizeChildren2 = _interopRequireDefault(_normalizeChildren);
 
@@ -2705,24 +2906,24 @@ var _Component = require('./Component');
 
 var _Component2 = _interopRequireDefault(_Component);
 
-var _utilsConsole = require('./utils/console');
+var _console = require('./utils/console');
 
-var _utilsConsole2 = _interopRequireDefault(_utilsConsole);
+var _console2 = _interopRequireDefault(_console);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 if ("development" !== 'production') {
-    _utilsConsole2['default'].info('You\'re using dev version of Vidom');
+    _console2.default.info('You\'re using dev version of Vidom');
 }
 
-var _clientMounter = require('./client/mounter');
-
-_defaults(exports, _interopExportWildcard(_clientMounter, _defaults));
-
-exports.node = _createNode2['default'];
-exports.createComponent = _createComponent2['default'];
-exports.renderToString = _renderToString2['default'];
-exports.normalizeChildren = _normalizeChildren2['default'];
-exports.Component = _Component2['default'];
-},{"./Component":5,"./client/mounter":13,"./createComponent":21,"./createNode":22,"./normalizeChildren":25,"./renderToString":26,"./utils/console":27}]},{},[1])
+// TODO: take back after https://phabricator.babeljs.io/T6786
+// export * from './client/mounter';
+exports.node = _createNode2.default;
+exports.createComponent = _createComponent2.default;
+exports.renderToString = _renderToString2.default;
+exports.normalizeChildren = _normalizeChildren2.default;
+exports.Component = _Component2.default;
+},{"./Component":5,"./client/mounter":13,"./createComponent":21,"./createNode":22,"./renderToString":26,"./utils/console":27,"./utils/normalizeChildren":34}]},{},[1])
 
 
 //# sourceMappingURL=main.js.map
