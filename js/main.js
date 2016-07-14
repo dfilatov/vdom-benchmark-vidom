@@ -4,7 +4,7 @@ var vidom = require('vidom');
 var node = vidom.node;
 
 var NAME = 'vidom';
-var VERSION = '0.3.12';
+var VERSION = '0.3.14';
 
 function renderTree(nodes) {
   var children = [];
